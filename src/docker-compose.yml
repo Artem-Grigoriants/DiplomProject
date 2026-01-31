@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./  # The context should point to the directory containing the Dockerfile
+      dockerfile: Dockerfile
+    container_name: django_app
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app  # Since docker-compose.yml is in 'src', this mounts 'src' as '/app'
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PYTHONUNBUFFERED: 1
+      PYTHONPATH: /app
+      DJANGO_SETTINGS_MODULE: config.settings
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: aeg19802402
+      POSTGRES_DB: postgres
+    env_file:
+      - .env
+    restart: always
+
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: aeg19802402
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ../nginx:/etc/nginx/conf.d  # Adjusted path to match project structure
+    depends_on:
+      - web
+    restart: always
+
+volumes:
+  postgres_data:

@@ -1,0 +1,27 @@
+shop: "Example Shop"
+categories:
+  - id: 1
+    name: "Electronics"
+  - id: 2
+    name: "Home Appliances"
+goods:
+  - id: 101
+    name: "Smartphone"
+    category: 1
+    model: "Galaxy S21"
+    price: 700
+    price_rrc: 750
+    quantity: 50
+    parameters:
+      color: "Black"
+      memory: "128GB"
+  - id: 102
+    name: "Washing Machine"
+    category: 2
+    model: "LG Turbo"
+    price: 500
+    price_rrc: 550
+    quantity: 20
+    parameters:
+      capacity: "7kg"
+      energy_class: "A++"
