@@ -1,3 +1,8 @@
+#Код файла определяет сериализаторы для приложения `orders`.
+# Эти сериализаторы используются для преобразования сложных типов данных,
+# таких как модели Django, в формат JSON и наоборот, что позволяет проверять
+# и сериализовать данные для конечных точек API.
+
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Contact, Order, OrderItem, Cart, CartItem
@@ -13,7 +18,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        return user
+        return User.objects.create_user(**validated_data)
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,16 +44,16 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = ('id', 'type', 'value', 'user')
 
-class OrderSerializer(serializers.ModelSerializer):
-    items = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Order
-        fields = ('id', 'user', 'dt', 'status', 'items')
-
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
 
     class Meta:
         model = OrderItem
         fields = ('id', 'order', 'product', 'shop', 'quantity')
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True, source='order_items')
+
+    class Meta:
+        model = Order
+        fields = ('id', 'user', 'dt', 'status', 'items')

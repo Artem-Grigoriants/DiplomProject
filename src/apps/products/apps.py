@@ -1,3 +1,6 @@
+#Код определяет конфигурацию приложения `products`
+#Он задаёт метаданные и настройки для приложения.
+
 from django.apps import AppConfig
 
 class ProductsConfig(AppConfig):

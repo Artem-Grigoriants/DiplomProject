@@ -25,13 +25,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: aeg19802402
       POSTGRES_DB: postgres
+      POSTGRES_HOST: db
     env_file:
       - .env
     restart: always
 
   db:
     image: postgres:13
-    container_name: postgres_db
+    container_name: db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: aeg19802402

@@ -1,8 +1,8 @@
-#Registers the Product model in the Django admin interface.
+#Код регистрирует модель Product в административном интерфейсе Django.
 from django.contrib import admin
 from .models import Product
 
-# Check if the model is already registered
+#Проверяем, зарегистрирована ли модель уже.
 if not admin.site.is_registered(Product):
     @admin.register(Product)
     class ProductAdmin(admin.ModelAdmin):

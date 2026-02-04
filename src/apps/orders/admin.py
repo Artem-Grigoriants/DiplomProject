@@ -1,3 +1,7 @@
+#Код для определения административного интерфейса приложения `orders`.
+#Он настраивает отображение и управление моделями,
+#такими как `Shop`, `Category`, `Order` и другими, в панели администратора Django.
+
 from django.contrib import admin
 from .models import (
     Shop, Category, ProductInfo, Parameter, ProductParameter,

@@ -1,10 +1,13 @@
+#Основной конфигурационный файл приложения Django.
+#Он содержит все настройки и конфигурации,
+#необходимые для работы проекта.
 import os
 from pathlib import Path
 
-# Base directory
+# Базовый каталог
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security settings
+# Настройки безопасности
 SECRET_KEY = 'your-secret-key'
 DEBUG = True
 ALLOWED_HOSTS = []
@@ -12,7 +15,7 @@ ALLOWED_HOSTS = []
 #Настройка кастомной модель пользователя
 AUTH_USER_MODEL = 'users.User'
 
-# Installed apps
+# Установленные приложения
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,7 +32,7 @@ INSTALLED_APPS = [
     'djoser',
 ]
 
-#REST_FRAMEWORK
+#Конфигурация REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -43,10 +46,11 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-#DJOSER
+#Конфигурация Djoser**:
+#Настраивает поведение библиотеки Djoser для аутентификации и управления пользователями.
 DJOSER = {
     'LOGIN_FIELD': 'email',
-    'USER_CREATE_PASSWORD_RETYPE': True,
+    'USER_CREATE_PASSWORD_RETYPE': False,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': False,
     'SERIALIZERS': {
@@ -55,7 +59,9 @@ DJOSER = {
     },
 }
 
-# Middleware
+# Промежуточное ПО**:
+# Отображает список промежуточного ПО,
+# используемого в проекте для обработки запросов и ответов.
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -93,19 +99,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',  # Replace with your PostgreSQL database name
-        'USER': 'postgres',  # Replace with your PostgreSQL username
-        'PASSWORD': 'aeg19802402',  # Replace with your PostgreSQL password
-        'HOST': 'db',  # Replace with your database host (e.g., 'localhost' or an IP address)
-        'PORT': '5432',  # Replace with your database port (default is '5432')
+        'NAME': os.environ.get('POSTGRES_DB', 'postgres'),  # Use env var when available
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'aeg19802402'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),  # will be 'db' inside Docker
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     },
     'test_postgres': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test_postgres',  # Тестовая база данных
-        'USER': 'postgres',
-        'PASSWORD': 'aeg19802402',
-        'HOST': 'db',
-        'PORT': '5432',
+        'NAME': os.environ.get('TEST_POSTGRES_DB', 'test_postgres'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'aeg19802402'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     },
 }
 

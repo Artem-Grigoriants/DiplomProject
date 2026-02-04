@@ -1,15 +1,26 @@
+#Код содержит автоматизированные тестовые примеры для приложения `orders`.
+#Он используется для проверки функциональности функций, связанных с заказами,
+#таких как создание заказов и получение списка заказов
+
 from rest_framework.test import APITestCase
 from rest_framework import status
 from apps.orders.models import Order, OrderItem
 from apps.users.models import User
-from apps.products.models import Product
-from .models import Order, OrderItem
+from apps.products.models import Product, Supplier
 
 class OrderTests(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="testpassword123")
-        self.product = Product.objects.create(name="Test Product", price=100.00, stock=10)
+        # create user and authenticate
+        self.user = User.objects.create_user(username='testuser', email='testuser@example.com', password='testpassword123', company='Test Company', position='Developer', type='buyer')
         self.client.force_authenticate(user=self.user)
+
+        self.supplier = Supplier.objects.create(name="Test Supplier")
+        self.product = Product.objects.create(
+            name="Test Product",
+            price=100.00,
+            stock=10,
+            supplier=self.supplier  # Свяжет продукт с поставщиком
+        )
 
     def test_create_order(self):
         data = {

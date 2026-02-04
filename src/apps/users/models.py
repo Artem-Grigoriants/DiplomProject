@@ -1,28 +1,90 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
+#определяет модели базы данных для приложения `users`.
+#Эти модели представляют структуру данных, связанных с пользователями в базе данных.
+
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+USER_TYPE_CHOICES = (
+    ('shop', 'Магазин'),
+    ('buyer', 'Покупатель'),
+)
+
+class UserManager(BaseUserManager):
+    """
+    Custom manager for User model.
+    """
+    use_in_migrations = True
+
+    def _create_user(self, email, password, **extra_fields):
+        """
+        """
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        """
+        Create and save a regular user with the given email and password.
+        """
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        """
+        Create and save a superuser with the given email and password.
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
+
 
 class User(AbstractUser):
-    email = models.EmailField(unique=True)
-    is_supplier = models.BooleanField(default=False, verbose_name="Поставщик")
-    is_client = models.BooleanField(default=False, verbose_name="Клиент")
-
-    groups = models.ManyToManyField(
-        Group,
-        related_name="custom_user_set",  # Added unique related_name to avoid clashes
-        blank=True,
-        help_text="The groups this user belongs to.",
-        verbose_name="groups",
-    )
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name="custom_user_permissions_set",  # Added unique related_name to avoid clashes
-        blank=True,
-        help_text="Specific permissions for this user.",
-        verbose_name="user permissions",
-    )
-
+    """
+    Custom user model extending AbstractUser.
+    """
+    REQUIRED_FIELDS = []
+    objects = UserManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    email = models.EmailField(_('email address'), unique=True)
+    company = models.CharField(verbose_name='Компания', max_length=40, blank=True)
+    position = models.CharField(verbose_name='Должность', max_length=40, blank=True)
+    username_validator = UnicodeUsernameValidator()
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[username_validator],
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+        help_text=_(
+            'Designates whether this user should be treated as active. '
+            'Unselect this instead of deleting accounts.'
+        ),
+    )
+    type = models.CharField(verbose_name='Тип пользователя', choices=USER_TYPE_CHOICES, max_length=5, default='buyer')
 
     def __str__(self):
-        return self.email
+        return f'{self.first_name} {self.last_name}'
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = "Список пользователей"
+        ordering = ('email',)

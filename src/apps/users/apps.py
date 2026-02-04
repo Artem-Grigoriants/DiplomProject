@@ -1,3 +1,6 @@
+#Код определяет конфигурацию приложения `users` в вашем проекте Django.
+#Он задаёт метаданные и настройки для приложения.
+
 from django.apps import AppConfig
 
 class UsersConfig(AppConfig):
