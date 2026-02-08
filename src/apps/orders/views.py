@@ -18,6 +18,8 @@ from .serializers import (
     OrderItemSerializer,
 )
 from django.shortcuts import get_object_or_404
+from django.db import transaction
+from apps.orders.tasks import notify_supplier_task
 
 User = get_user_model()
 
@@ -135,6 +137,8 @@ class OrderConfirmationView(APIView):
                 quantity=item.quantity
             )
         cart.items.all().delete()
+        # Неблокирующая отправка уведомления поставщику через Celery
+        transaction.on_commit(lambda: notify_supplier_task.delay(order.id))
         return Response({'message': 'Order confirmed'}, status=status.HTTP_201_CREATED)
 
 
@@ -164,6 +168,8 @@ class OrderListView(APIView):
                 quantity=it.get('quantity', 1)
             )
         serializer = OrderSerializer(order)
+        # Неблокирующая отправка уведомления поставщику через Celery
+        transaction.on_commit(lambda: notify_supplier_task.delay(order.id))
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 # Пояснение:
