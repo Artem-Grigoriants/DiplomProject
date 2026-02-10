@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from apps.orders.models import Order, OrderItem
 from apps.users.models import User
-from apps.products.models import Product, Supplier
+from apps.products.models import Product, Supplier, Category
 
 class OrderTests(APITestCase):
     def setUp(self):
@@ -15,11 +15,13 @@ class OrderTests(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         self.supplier = Supplier.objects.create(name="Test Supplier")
+        self.category = Category.objects.create(name="Test Category", description="Test Description")
         self.product = Product.objects.create(
             name="Test Product",
             price=100.00,
             stock=10,
-            supplier=self.supplier  # Свяжет продукт с поставщиком
+            supplier=self.supplier,
+            category=self.category
         )
 
     def test_create_order(self):

@@ -1,15 +1,17 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
-from apps.products.models import Product, Supplier
+from apps.products.models import Product, Supplier, Category
 from apps.products.serializers import ProductSerializer
 
 class ProductTests(APITestCase):
     def setUp(self):
         self.supplier = Supplier.objects.create(name="Test Supplier", contact_info="test@example.com")
+        self.category = Category.objects.create(name="Test Category", description="Test Description")
         self.product = Product.objects.create(
             name="Test Product",
             description="Test Description",
             supplier=self.supplier,
+            category=self.category,
             characteristics={"color": "red", "size": "M"},
             price=100.00,
             stock=10
