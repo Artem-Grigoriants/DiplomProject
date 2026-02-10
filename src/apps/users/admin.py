@@ -14,9 +14,9 @@ class CustomUserAdmin(UserAdmin):
         ('Permissions', {'fields': ('is_staff', 'is_active', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),}
-        ),
+        (None, {'fields': ('username', 'email', 'password', 'password2')}),
+        ('Personal Info', {'fields': ('first_name', 'last_name', 'company', 'position', 'type')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'groups', 'user_permissions')}),
     )
     search_fields = ('email', 'username', 'company', 'position')
     ordering = ('email',)

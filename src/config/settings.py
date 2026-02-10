@@ -24,6 +24,8 @@ AUTHENTICATION_BACKENDS = (
 
 # Установленные приложения
 INSTALLED_APPS = [
+    'jet.dashboard',
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -162,6 +164,10 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+# JET settings
+JET_THEME = 'default'
+JET_SIDE_MENU_COMPACT = True
+
 # Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -188,5 +194,3 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SEC
 
 SOCIAL_AUTH_YANDEX_OAUTH2_KEY = os.environ.get('SOCIAL_AUTH_YANDEX_OAUTH2_KEY', 'your-yandex-oauth2-key')
 SOCIAL_AUTH_YANDEX_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_YANDEX_OAUTH2_SECRET', 'your-yandex-oauth2-secret')
-
-
