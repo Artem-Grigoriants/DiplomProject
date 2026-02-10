@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from easy_thumbnails.fields import ThumbnailerImageField
 
 USER_TYPE_CHOICES = (
     ('shop', 'Магазин'),
@@ -60,7 +61,7 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     email = models.EmailField(_('email address'), unique=True)
     company = models.CharField(verbose_name='Компания', max_length=40, blank=True)
-    position = models.CharField(verbose_name='Должность', max_length=40, blank=True)
+    position = models.CharField(verbose_name='Должность', max_length=100, blank=True)
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
         _('username'),
@@ -79,7 +80,8 @@ class User(AbstractUser):
             'Unselect this instead of deleting accounts.'
         ),
     )
-    type = models.CharField(verbose_name='Тип пользователя', choices=USER_TYPE_CHOICES, max_length=5, default='buyer')
+    type = models.CharField(verbose_name='Тип пользователя', choices=USER_TYPE_CHOICES, max_length=10, default='buyer')
+    avatar = ThumbnailerImageField(upload_to='avatars/', blank=True, null=True, verbose_name='Аватар')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

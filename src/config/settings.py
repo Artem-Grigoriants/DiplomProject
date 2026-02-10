@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'drf_spectacular',
+    'easy_thumbnails',
 ]
 
 #Конфигурация REST Framework
@@ -186,6 +187,22 @@ CELERY_TIMEZONE = 'UTC'
 # When running tests, execute tasks locally (synchronously)
 CELERY_TASK_ALWAYS_EAGER = os.environ.get('CELERY_TASK_ALWAYS_EAGER', 'False') == 'True'
 CELERY_TASK_EAGER_PROPAGATES = True
+
+# Thumbnail settings
+THUMBNAIL_ALIASES = {
+    '': {
+        'avatar': {'size': (50, 50), 'crop': True},
+        'product_small': {'size': (100, 100), 'crop': True},
+        'product_medium': {'size': (300, 300), 'crop': True},
+    },
+}
+THUMBNAIL_DEFAULT_STORAGE = 'easy_thumbnails.storage.ThumbnailFileSystemStorage'
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'easy_thumbnails.processors.scale_and_crop',
+    'easy_thumbnails.processors.filters',
+)
 
 # Social Auth configuration
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
