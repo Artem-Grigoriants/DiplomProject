@@ -28,3 +28,7 @@ drf-spectacular~=0.26.0
 # Для авторизации через соцсети
 social-auth-app-django~=5.4.0
 
+# Для кэширования
+django-cacheops==6.2
+pycairo
+

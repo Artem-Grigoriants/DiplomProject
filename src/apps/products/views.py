@@ -9,9 +9,12 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny
 from .models import Product
 from .serializers import ProductSerializer
+from cacheops import cached_as
 
 class ProductListView(ListAPIView):
-    queryset = Product.objects.select_related('supplier').all()
+    @cached_as(Product)
+    def get_queryset(self):
+        return Product.objects.select_related('supplier').all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend, SearchFilter]

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'djoser',
     'drf_spectacular',
     'easy_thumbnails',
+    'cacheops',
 ]
 
 #Конфигурация REST Framework
@@ -219,4 +220,13 @@ ROLLBAR = {
     'environment': 'development' if DEBUG else 'production',
     'code_version': '1.0',
     'root': BASE_DIR,
+}
+
+# Cacheops settings
+CACHEOPS_REDIS = "redis://redis:6379/2"
+
+CACHEOPS = {
+    'products.product': {'ops': 'all', 'timeout': 60 * 15},
+    'orders.order': {'ops': ('fetch', 'get'), 'timeout': 60 * 60},
+    '*.*': {'ops': (), 'timeout': 60 * 60},
 }
